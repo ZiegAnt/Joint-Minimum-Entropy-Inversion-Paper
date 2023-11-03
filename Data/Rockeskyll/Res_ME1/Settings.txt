@@ -1,0 +1,13 @@
+Magetgics:
+q = 1 
+a = 50
+lam = 0.05 
+beta = 1e-10
+startModel = pg.Vector(mesh.cellCount(), 1e-4)
+KWm = dict(lam=lam, startModel=startModel, verbose=False, err=relError, limits=[0, 0.15])
+
+ERT:
+q = 1 
+a = 35
+lam = 0.005 
+beta = 1e-10

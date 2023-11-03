@@ -1,0 +1,51 @@
+JME2_1
+q = 2
+a = [20, 60]
+lam_e = 0.01
+lam_m = 0.01
+beta = 1e-10
+mw = [3,1]
+maxIter = 30
+chi_limit=12
+
+
+JME2_2
+q = 2
+a = [20, 60]
+lam_e = 0.01
+lam_m = 0.01
+beta = 1e-10
+mw = [1,1]
+maxIter = 30
+chi_limit=12
+
+
+JME2_3
+q = 2
+a = [60, 60]
+lam_e = 0.01
+lam_m = 0.01
+beta = 1e-10
+mw = [3,1]
+maxIter = 30
+chi_limit=17
+
+JME2_4
+q = 2
+a = [20, 60]
+lam_e = 0.01
+lam_m = 0.01
+beta = 1e-10
+mw = [10,1]
+maxIter = 30
+chi_limit=17
+
+JME2_5
+q = 2
+a = [20, 60]
+lam_e = 0.01
+lam_m = 0.01
+beta = 1e-10
+mw = [100,1]
+maxIter = 30
+chi_limit=17

@@ -1,0 +1,13 @@
+Magnetics
+q = 2 
+a = 60
+lam = 0.01
+beta = 1e-10
+startModel=1e-4
+
+
+ERT
+q = 2,
+a = 15
+lam = 0.01
+beta = 1e-10 

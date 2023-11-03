@@ -1,0 +1,16 @@
+Magnetics:
+- lam = 10
+- start = 1e-5
+- maxIter = 50
+- limits = [0, 0.15]
+- dPhi = 0.1
+
+ERT2D:
+- Line1: lam=10, verbose=True, paraMaxCellSize=2, paraDepth=40, quality=33.6
+- Line2: lam=10, verbose=True, paraMaxCellSize=2, paraDepth=40, quality=33.6
+- Line3: lam=10, verbose=True, paraMaxCellSize=2, paraDepth=40, quality=33.6
+- Line4: lam=10, verbose=True, paraMaxCellSize=2, paraDepth=40, quality=33.6
+
+ERT 3D:
+- limits = [1, 1e5]
+- lam=15, dPhi=0.01

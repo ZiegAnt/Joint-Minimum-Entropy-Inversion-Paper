@@ -1,0 +1,37 @@
+JME1_1_1
+q = 1
+a = [35, 50]
+lam_e = 0.005
+lam_m = 0.05
+beta = 1e-10
+mw = [1,1]
+maxIter = 20
+
+JME1_10_1
+q = 1
+a = [35, 50]
+lam_e = 0.005
+lam_m = 0.05
+beta = 1e-10
+mw = [10,1]
+maxIter = 20
+
+JME1_100_1
+q = 1
+a = [35, 50]
+lam_e = 0.005
+lam_m = 0.05
+beta = 1e-10
+mw = [100,1]
+maxIter = 20
+
+JME1_1_100
+q = 1
+a = [35, 50]
+lam_e = 0.005
+lam_m = 0.05
+beta = 1e-10
+mw = [1,100]
+maxIter = 20
+
+
