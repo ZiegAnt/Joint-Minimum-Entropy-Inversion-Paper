@@ -1,3 +1,7 @@
+# %% 
+# Modified Version that allows differing start and reference models
+
+
 # %% Imports
 import  pygimli                 as     pg
 import  numpy                   as     np
@@ -62,6 +66,9 @@ class JointEntropyInversion(object):
         
         # Inversion Keyword dicts
         self.KWInv = [None for m in self.mgrs]
+        
+        # Reference models
+        self.refmod = [None for m in self.mgrs]
         
         # Saving variables
         self.weightsHistory    = 'There was no inversion run so there is no history yet'
@@ -183,6 +190,12 @@ class JointEntropyInversion(object):
             List containing one kwarg dictionary for each method.
         '''
         self.KWInv = dict_list
+        
+    def setReferenceModel(self,refmod_list):
+        """
+        Set list of Reference Models (list of pg.Vectors).
+        """
+        self.refmod = refmod_list
 
     def normalize(self, m, m0):
         '''
@@ -215,7 +228,7 @@ class JointEntropyInversion(object):
         '''
         Q = []
         for mgr_i, mgr in enumerate(self.mgrs):
-            m0 = pg.Vector(mgr.inv.startModel)
+            m0 = self.refmod[mgr_i]
             m = mgr.model
             
             [m, m0] = self.normalize(m, m0)
@@ -233,7 +246,7 @@ class JointEntropyInversion(object):
         diff = np.zeros((self.mesh.cellCount(),len(self.mgrs)))
         
         for i in range(len(self.mgrs)):
-            m0 = pg.Vector(self.mgrs[i].inv.startModel)
+            m0 = self.refmod[i]
             m = self.mgrs[i].model
             
             [m, m0] = self.normalize(m, m0)
@@ -248,7 +261,7 @@ class JointEntropyInversion(object):
         '''
         Q = []
         for mgr_i, mgr in enumerate(self.mgrs):
-            m0 = pg.Vector(mgr.inv.startModel)
+            m0 = self.refmod[mgr_i]
             m = mgr.model
             [m, m0] = self.normalize(m, m0)   
             grad_m = pg.solver.grad(self.mesh, m)
@@ -266,7 +279,7 @@ class JointEntropyInversion(object):
         grad = np.zeros((self.mesh.cellCount(),len(self.mgrs)))
         
         for i in range(len(self.mgrs)):
-            m0 = pg.Vector(self.mgrs[i].inv.startModel)
+            m0 = self.refmod[i]
             m = self.mgrs[i].model
             [m, m0] = self.normalize(m, m0)
             grad_m = pg.solver.grad(self.mesh, m)
@@ -288,14 +301,14 @@ class JointEntropyInversion(object):
             Inversion framework.
         '''
         if iteration>0:
-            m0 = pg.Vector(inv.startModel)
+            mgr_i = np.argwhere([inv == mgr.inv for mgr in self.mgrs])[0][0] # Index of manager in self.mgrs
+            
+            m0 = self.refmod[mgr_i]
             m = inv.model
             [m, m0] = self.normalize(m, m0)
             
             mesh = self.mesh
             Q = self.Q_JME
-            
-            mgr_i = np.argwhere([inv == mgr.inv for mgr in self.mgrs])[0][0] # Index of manager in self.mgrs
         
             we = np.sqrt( 1/Q * 1/(self.b+abs(m-m0)**2) * (self.b+self.method_weights[mgr_i]*abs(m-m0)**self.q) * np.log(Q/(self.b+self.Diff_sum)))
             
@@ -319,7 +332,9 @@ class JointEntropyInversion(object):
             Inversion framework.
         '''
         if iteration>0:
-            m0 = pg.Vector(inv.startModel)
+            mgr_i = np.argwhere([inv == mgr.inv for mgr in self.mgrs])[0][0] # Index of manager in self.mgr
+            
+            m0 = self.refmod[mgr_i]
             m = inv.model
             [m, m0] = self.normalize(m, m0)
             
@@ -327,8 +342,6 @@ class JointEntropyInversion(object):
             grad_m = pg.solver.grad(self.mesh, m)     
             Q = self.Q_JMEG
             
-            mgr_i = np.argwhere([inv == mgr.inv for mgr in self.mgrs])[0][0] # Index of manager in self.mgrs
-
             we = np.sqrt( 1/Q * 1/(self.b+abs(m-m0)**2) * (self.b+self.method_weights[mgr_i]*np.linalg.norm(grad_m,axis=1)**self.q) * np.log(Q/(self.b+self.Grad_sum)))
             
             Cweights = np.ones(len(inv.inv.cWeight()))*np.mean(we)*self.a[mgr_i] # re-set constrain weights 
@@ -365,6 +378,11 @@ class JointEntropyInversion(object):
         if any(dic==None for dic in self.KWInv):
             raise pg.critical("Inversion KW dictionaries are not set for all methods!!! Set them via self.setKWInv")
             sys.exit()
+            
+        # Check if necessary reference models are defined for all methods
+        if any(rm==None for rm in self.refmod):
+            raise pg.critical("Reference models are not set for all methods!!! Set them via self.setReferenceModel")
+            sys.exit()
         
         # Define saving variables
         self.weightsHistory   = [[] for mgr in self.mgrs]
@@ -385,7 +403,10 @@ class JointEntropyInversion(object):
         
         for mgr_i,mgr in enumerate(self.mgrs):
             print(f'... {self.names[mgr_i]}')
-            mgr.invert(maxIter=1, mesh=self.mesh_list[mgr_i], isReference=True, cType=10, **self.KWInv[mgr_i])
+            # Set reference models to inversion frame works
+            mgr.inv.inv.setReferenceModel(self.refmod[mgr_i])
+            # Invert first iteration to ensure that all helpers in pygimli are set properly
+            mgr.invert(maxIter=1, mesh=self.mesh_list[mgr_i], isReference=False, cType=10, **self.KWInv[mgr_i])
             # This ensures that the inv.model of a traveltime manager is in slowness
             if type(mgr)==pg.physics.traveltime.TravelTimeManager:
                 mgr.inv.model = 1/mgr.inv.model
@@ -486,6 +507,10 @@ class JointEntropyInversion(object):
         return m_est
 
     def plotFitHistory(self):
+        '''
+        Plotting RMS and CHI^2 misfit for all inversion frameworks for 
+        a nice overview over convergence :)
+        '''
         
         n = len(self.mgrs) # number of methods
         it = len(self.chi2History[0]) # number of iterations that were done
@@ -520,6 +545,17 @@ class JointEntropyInversion(object):
         
         
     def plotWeights(self, method, step=4):
+        '''
+        Plot the ME/MEG weights of some iterations for visualization and better 
+        understanding of the method
+
+        Parameters
+        ----------
+        method : 'ME' or 'MEG'
+            DESCRIPTION.
+        step : int
+            steps of iterations you want to get plotted. The default is 4.
+        '''
         
         n = len(self.mgrs) # number of methods
         it = len(self.chi2History[0]) # number of iterations that were done

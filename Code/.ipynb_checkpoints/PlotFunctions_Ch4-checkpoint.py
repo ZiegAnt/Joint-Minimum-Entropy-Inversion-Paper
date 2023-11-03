@@ -216,43 +216,6 @@ def showPseudosections(geoContainer, rhoa, idx_list, Lines, ax, clim, cmap='gnup
         return ax
 
 
-    
-    
-
-    # Plot 2D Matrix
-    if lim==None:
-        if Type=='misfit':
-            im = ax.imshow(misfit_mat, cmap=cmap)
-            lim = [min(misfit),max(misfit)]
-        if Type=='appvel_obs':
-            im = ax.imshow(app_vel_obs, cmap=cmap)
-            lim = [min(va_obs),max(va_obs)]
-        if Type=='appvel_pre':
-            im = ax.imshow(app_vel_pre, cmap=cmap)
-            lim = [min(va_pre),max(va_pre)]
-    else:
-        if Type=='misfit':
-            im = ax.imshow(misfit_mat, cmap=cmap, vmin=lim[0], vmax=lim[1])
-        if Type=='appvel_obs':
-            im = ax.imshow(app_vel_obs, cmap=cmap, vmin=lim[0], vmax=lim[1])
-        if Type=='appvel_pre':
-            im = ax.imshow(app_vel_pre, cmap=cmap, vmin=lim[0], vmax=lim[1])
-    # Axes labels
-    ax.set_xlabel('Sensor index')
-    ax.set_ylabel('Source index')
-    
-    # Colorbar
-    if colorBar:
-        cax = ax.inset_axes([1.02, 0.05, 0.015, 0.9])
-        if Type=='misfit':
-            createColorBarOnly(ax=cax, cMin=lim[0], cMax=lim[1], logScale=False,cMap=cmap,
-                               label='Misfit (%)', orientation='vertical')
-        else:
-            createColorBarOnly(ax=cax, cMin=lim[0], cMax=lim[1], logScale=False,cMap=cmap,
-                               label=pg.unit('va'), orientation='vertical')
-        return ax, cax
-    else:
-        return ax
 
 def showTTMatrix(mgr, Type, ax, lim=None, cmap='jet', colorBar=True): 
     '''
@@ -270,7 +233,7 @@ def showTTMatrix(mgr, Type, ax, lim=None, cmap='jet', colorBar=True):
     offset = [np.linalg.norm(mgr.data.sensorPosition(shot[i]).array()-mgr.data.sensorPosition(rec[i]).array()) for i in range(len(shot))]
     d_shot = np.unique(shot)[1]-np.unique(shot)[0] # shot index separation
     
-    resp = mgr.inv.response.array()  #et response
+    resp = mgr.inv.response.array()  #get response
     
     # apparent velocities
     va_obs = offset/data
