@@ -1,5 +1,5 @@
 # JMEI_Paper
-## Minimum entropy constrained cooperative inversion of electrical resistivity, seismic and magnetic data - Complementary Repository
+## Minimum entropy constrained cooperative inversion of electrical resistivity, seismic and magnetic data <br>Complementary Repository
 
 Complementary GitHub repository to the Paper by [Anton Ziegon](https://www.gim.rwth-aachen.de/team/alumni/), [Prof. Dr. Florian Wagner](https://www.gim.rwth-aachen.de/team/florian-wagner/) and [Dr. Marc Boxberg](https://www.gim.rwth-aachen.de/team/marc-boxberg/) of the [Teaching and Research Unit Geophysical Imaging and Monitoring (GIM)](https://www.gim.rwth-aachen.de/about/) of RWTH Aachen University.
 
