@@ -409,8 +409,8 @@ def plotJointResultsComparison(mesh, coverage, res_list, sus_list,
         fig, ax = plt.subplots(rows, 2, figsize=figsize)
         fig.tight_layout(pad=0.1)
 
-        ax[0,0].set_title('ERT Results', fontsize = 14)
-        ax[0,1].set_title('MAG Results', fontsize = 14)
+        ax[0,0].set_title('ERT', fontsize = 16)
+        ax[0,1].set_title('MAG', fontsize = 16)
 
         for i in range(rows): 
             pg.show(mesh, sus_list[i], ax=ax[i,1], coverage=coverage,
@@ -423,14 +423,14 @@ def plotJointResultsComparison(mesh, coverage, res_list, sus_list,
 
             if labels:
                 for axis in [ax[i,0],ax[i,1]]:
-                    axis.text(1, 414, label_list[i], fontsize=10,
+                    axis.text(1, 414, label_list[i], fontsize=12,
                               bbox={'facecolor': 'white', 'alpha': 0.8, 'pad': 5})
 
         # Adjust axis labels
         for axis in ax[:,0]:
-            axis.set_ylabel('Elevation (m.a.s.l.)')
+            axis.set_ylabel('Elevation (m.a.s.l.)', fontsize=12)
         for axis in ax[-1,:]:
-            axis.set_xlabel('Distance (m)')
+            axis.set_xlabel('Distance (m)', fontsize=12)
         for ax_ar in ax[:-1,:]:
             for axis in ax_ar:
                 axis.set_xticks([])
@@ -448,7 +448,12 @@ def plotJointResultsComparison(mesh, coverage, res_list, sus_list,
         # Add colorbar MAG
         cax2 = ax[-1,1].inset_axes([0.05, -0.7, 0.9, 0.15])
         createColorBarOnly(ax=cax2, cMin=lim_mag[0], cMax=lim_mag[1], logScale=False,cMap=c_mag,
-                          label='Magnetic Susceptibility', orientation='horizontal')
+                          label='Magnetic susceptibility (-)', orientation='horizontal')
+        # some axis edits
+        cax1.xaxis.label.set_size(12)
+        cax2.xaxis.label.set_size(12)
+        cax1.tick_params(labelsize=11)
+        cax2.tick_params(labelsize=11)
 
     return fig, ax, [cax1, cax2]
 

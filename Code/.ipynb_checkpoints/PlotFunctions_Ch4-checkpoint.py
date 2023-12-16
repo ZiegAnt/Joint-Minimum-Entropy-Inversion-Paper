@@ -31,8 +31,8 @@ def plotJointResultsComparison(mesh, r_est_list, v_est_list,
         fig, ax = plt.subplots(rows, 2, figsize=figsize)
         fig.tight_layout(pad=0.5)
 
-        ax[0,0].set_title('ERT Results', fontsize = 14)
-        ax[0,1].set_title('SRT Results', fontsize = 14)
+        ax[0,0].set_title('ERT Results', fontsize = 16)
+        ax[0,1].set_title('SRT Results', fontsize = 16)
 
         for i in range(rows): 
             pg.show(mesh, v_est_list[i], ax=ax[i,1], 
@@ -50,9 +50,9 @@ def plotJointResultsComparison(mesh, r_est_list, v_est_list,
 
         # Adjust axis labels
         for axis in ax[:,0]:
-            axis.set_ylabel('Z (m)')
+            axis.set_ylabel('Z (m)', fontsize=12)
         for axis in ax[-1,:]:
-            axis.set_xlabel('X (m)')
+            axis.set_xlabel('X (m)', fontsize=12)
         for ax_ar in ax[:-1,:]:
             for axis in ax_ar:
                 axis.set_xticks([])
@@ -62,24 +62,33 @@ def plotJointResultsComparison(mesh, r_est_list, v_est_list,
             for axis in ax_ar:
                 axis.set_xlim(-35,35)
                 axis.set_ylim(-20,0)
+        for axis in ax:
+            for a in axis:
+                a.tick_params(labelsize=11)
 
         # Add colorbar ERT
-        cax1 = ax[-1,0].inset_axes([0.05, -0.6, 0.9, 0.15])
+        cax1 = ax[-1,0].inset_axes([0.05, -0.7, 0.9, 0.15])
         createColorBarOnly(ax=cax1, cMin=lim_ert[0], cMax=lim_ert[1], logScale=True,cMap=c_ert,
                           label=pg.unit('res'), orientation='horizontal')
         if marks:
             for i, v in enumerate(ert_marks):
                 cax1.plot([v]*2, [0,1], 'w')
-                cax1.text(v, 1.3, ert_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
+                cax1.text(v, 1.5, ert_label[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
 
         # Add colorbar SRT
-        cax2 = ax[-1,1].inset_axes([0.05, -0.6, 0.9, 0.15])
+        cax2 = ax[-1,1].inset_axes([0.05, -0.7, 0.9, 0.15])
         createColorBarOnly(ax=cax2, cMin=lim_srt[0], cMax=lim_srt[1], logScale=False,cMap=c_srt,
                           label=pg.unit('vel'), orientation='horizontal')
         if marks:
             for i, r in enumerate(srt_marks):
                 cax2.plot([r]*2, [0,1], 'w')
-                cax2.text(r, 1.3, srt_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
+                cax2.text(r, 1.5, srt_label[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
+
+        # some axis edits
+        cax1.xaxis.label.set_size(12)
+        cax2.xaxis.label.set_size(12)
+        cax1.tick_params(labelsize=11)
+        cax2.tick_params(labelsize=11)
 
     return fig, ax, [cax1, cax2]
 
