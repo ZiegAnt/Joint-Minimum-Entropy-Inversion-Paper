@@ -7,7 +7,7 @@ from    pygimli.viewer.mpl      import createColorBarOnly
 def plotJointResultsComparison(mesh, r_est_list, v_est_list,
                                c_ert, c_srt, lim_ert, lim_srt, label_list, labels=False,
                                ert_marks=None, srt_marks=None, ert_label=None, srt_label=None, marks=False,
-                               figsize=(10,3.5)):
+                               figsize=(10,3.5),xlim=[-35,35],ylim=[-20,0]):
                                
     '''
     mesh: Inversion mesh (should be same for ERT and SRT)
@@ -23,7 +23,7 @@ def plotJointResultsComparison(mesh, r_est_list, v_est_list,
         fig, ax, [cax1, cax2] = plotResultsComparison(mesh, r_est_list[0], v_est_list[0], c_ert, c_srt, lim_ert, lim_srt,
                                                       ert_marks=ert_marks, srt_marks=srt_marks, 
                                                       ert_label=ert_label, srt_label=srt_label, marks=marks,
-                                                      figsize=figsize)
+                                                      figsize=figsize,xlim=xlim,ylim=ylim)
     else:
         
 
@@ -60,8 +60,8 @@ def plotJointResultsComparison(mesh, r_est_list, v_est_list,
             axis.set_yticks([])
         for ax_ar in ax:
             for axis in ax_ar:
-                axis.set_xlim(-35,35)
-                axis.set_ylim(-20,0)
+                axis.set_xlim(xlim[0],xlim[1])
+                axis.set_ylim(ylim[0],ylim[1])
         for axis in ax:
             for a in axis:
                 a.tick_params(labelsize=11)
@@ -95,7 +95,7 @@ def plotJointResultsComparison(mesh, r_est_list, v_est_list,
 
 def plotResultsComparison(mesh, r_est, v_est,c_ert, c_srt, lim_ert, lim_srt,
                           ert_marks=None, srt_marks=None, ert_label=None, srt_label=None, marks=False,
-                          figsize=(10,3.5)):
+                          figsize=(10,3.5),xlim=[-35,35],ylim=[-20,0]):
                                
     '''
     mesh: Inversion mesh (should be same for ERT and SRT)
@@ -128,8 +128,8 @@ def plotResultsComparison(mesh, r_est, v_est,c_ert, c_srt, lim_ert, lim_srt,
     ax[1].set_xlabel('X (m)')
     ax[1].set_yticks([])
     for axis in ax:
-            axis.set_xlim(-35,35)
-            axis.set_ylim(-20,0)
+        axis.set_xlim(xlim[0],xlim[1])
+        axis.set_ylim(ylim[0],ylim[1])
 
     # Add colorbar ERT
     cax1 = ax[0].inset_axes([0.05, -0.6, 0.9, 0.15])
